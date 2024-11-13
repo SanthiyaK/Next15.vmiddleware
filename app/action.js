@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import { SignJWT } from "jose";
 import dotenv from 'dotenv'
 import { cookies } from "next/headers";
+import Product from "@/model/ProductModel";
 
 dotenv.config()
 export async function UserRegister(formData) {
@@ -81,3 +82,31 @@ export async function UserLogout(){
    
    return { success: true, message: "Logged out successfully"};
 }
+// Server action to fetch all products from MongoDB
+export async function fetchProducts() {
+   try {
+     await dbconnect();  // Ensure DB is connected
+     
+     // Use lean() to return plain JavaScript objects instead of Mongoose documents
+     const products = await Product.find().lean(); // .lean() returns plain objects
+     
+     return products;  // Return the plain product objects
+   } catch (error) {
+     console.error("Error fetching products:", error);
+     throw new Error('Unable to fetch products');
+   }
+ }
+ export default async function fetchProduct(id) {
+      
+   try {
+     await dbconnect(); // Ensure DB is connected
+     // Use lean() to return plain JavaScript objects instead of Mongoose documents
+     const product = await Product.findById(id).lean()
+    return product;
+   } catch (error) { 
+     console.error("Error fetching products:", error);
+     throw new Error('Unable to fetch products');
+   }
+ 
+}
+ 
